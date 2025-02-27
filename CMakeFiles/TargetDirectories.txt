@@ -1,0 +1,5 @@
+/home/ropero/code/CGGD/CMakeFiles/Rasterization.dir
+/home/ropero/code/CGGD/CMakeFiles/Raytracing.dir
+/home/ropero/code/CGGD/CMakeFiles/DirectX12.dir
+/home/ropero/code/CGGD/CMakeFiles/edit_cache.dir
+/home/ropero/code/CGGD/CMakeFiles/rebuild_cache.dir
