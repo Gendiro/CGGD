@@ -62,7 +62,7 @@ void cg::renderer::ray_tracing_renderer::render()
 	raytracer->clear_render_target({0, 0, 0});
 	raytracer->miss_shader = [](const ray& ray) {
 		payload payload{};
-		payload.color = {0.f, 0.f, 0.f};
+		payload.color = {0.f, 0.f, (ray.direction.y + 1.f) * 0.5f};
 		return payload;
 	};
 	std::random_device rd;
@@ -73,14 +73,17 @@ void cg::renderer::ray_tracing_renderer::render()
 		float3 normal = normalize(payload.bary.x * triangle.na + payload.bary.y * triangle.nb + payload.bary.z * triangle.nc);
 		float3 result_color = triangle.emissive;
 
-		float3 random_direction{
-				dis(gen), dis(gen), dis(gen)};
-		if (dot(normal, random_direction) < 0.f) random_direction = -random_direction;
+		float3 random_direction
+		{
+			dis(gen), dis(gen), dis(gen)
+		}
 
 		for (auto& light: lights) {
-			cg::renderer::ray to_next_object(position, random_direction);
-			auto next_payload = raytracer->trace_ray(to_next_object, depth);
-			result_color += triangle.diffuse * next_payload.color.to_float3() * std::max(dot(normal, to_next_object.direction), 0.f);
+			cg::renderer::ray to_light(position, light.position - position);
+			struct payload shadow = shadow_raytracer->trace_ray(to_light, 1, length(light.position - position));
+			if (shadow.t < 0.f) {
+				result_color += triangle.diffuse * light.color * std::max(dot(normal, to_light.direction), 0.f);
+			}
 		}
 
 		payload.color = cg::color::from_float3(result_color);
