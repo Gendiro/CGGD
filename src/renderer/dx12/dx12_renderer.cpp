@@ -406,7 +406,7 @@ void cg::renderer::dx12_renderer::populate_command_list()
 
 void cg::renderer::dx12_renderer::move_to_next_frame()
 {
-	const cg ::renderer::dx12_renderer current_fence_value = fence_values[frame_index];
+	const cg::renderer::dx12_renderer current_fence_value = fence_values[frame_index];
 	THROW_IF_FAILED(command_queue->Signal(fence.Get(), current_fence_value));
 	frame_index = swap_chain->GetCurrentBackBufferIndex();
 	if (fence->GetCompletedValue() < fence_values[frame_index]) {
