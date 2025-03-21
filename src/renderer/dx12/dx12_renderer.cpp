@@ -52,7 +52,7 @@ void cg::renderer::dx12_renderer::render()
 	populate_command_list();
 
 	ID3D12CommandList* command_lists[] = {command_list.Get()};
-	command_queue->ExcecuteCommandLists(_countof(command_lists), command_lists);
+	command_queue->ExecuteCommandLists(_countof(command_lists), command_lists);
 
 	THROW_IF_FAILED(swap_chain->Present(0, 0));
 
@@ -381,14 +381,14 @@ void cg::renderer::dx12_renderer::populate_command_list()
 	command_list->ClearRenderTargetView(rtv_heap.get_cpu_descriptor_handle(frame_index), clear_color, 0, nullptr);
 
 	for (size_t s = 0; s < model->get_vertex_buffers().size(); s++) {
-		command_list->IASetVertexBuffer(0, 1, &vertex_buffer_views[s]);
+		command_list->IASetVertexBuffers(0, 1, &vertex_buffer_views[s]);
 		command_list->IASetIndexBuffer(&index_buffer_views[s]);
 		command_list->DrawIndexedInstanced(static_cast<UINT>(model->get_index_buffers()[s]->count()), 1, 0, 0, 0);
 	}
 
 	D3D12_RESOURCE_BARRIER end_barriers[] = {
 			CD3DX12_RESOURCE_BARRIER::Transition(
-					render_targets[frame_index].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT});
+					render_targets[frame_index].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT)};
 	command_list->ResourceBarrier(_countof(end_barriers), end_barriers);
 
 	THROW_IF_FAILED(command_list->Close());
