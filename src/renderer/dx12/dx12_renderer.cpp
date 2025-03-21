@@ -212,7 +212,7 @@ void cg::renderer::dx12_renderer::copy_data(const void* buffer_data, const UINT 
 D3D12_VERTEX_BUFFER_VIEW cg::renderer::dx12_renderer::create_vertex_buffer_view(const ComPtr<ID3D12Resource>& vertex_buffer, const UINT vertex_buffer_size)
 {
 	D3D12_VERTEX_BUFFER_VIEW view = {};
-	view.BufferLocation = vertex_buffers->GetGPUVirtualAddress();
+	viewBufferLocation = vertex_buffers->GetGPUVirtualAddress();
 	view.StrideInBytes = sizeof(vertex);
 	view.SizeInBytes = vertex_buffer_size;
 	return view;
@@ -250,7 +250,7 @@ void cg::renderer::dx12_renderer::load_assets()
 	vertex_buffer_views.resize(shape_num);
 	index_buffers.resize(shape_num);
 	index_buffer_views.resize(shape_num);
-	for (size_t i = 0; i<model> get_index_buffers().size(); i++) {
+	for (size_t i = 0; i < shape_num; i++) {
 		auto vertex_buffer_data = model->get_vertex_buffers()[i];
 		const UINT vertex_buffer_size = static_cast<UINT>(vertex_buffer_data->size_bytes());
 		std::wstring vertex_buffer_name(L"Vertex buffer ");
@@ -271,7 +271,7 @@ void cg::renderer::dx12_renderer::load_assets()
 	std::wstring const_buffer_name(L"Constant buffer");
 	create_resource_on_upload_heap(constant_buffer, 64 * 1024, const_buffer_name);
 	copy_data(&cb, sizeof(cb), constant_buffer);
-	CD3Dx12_RANGE read_range(0, 0);
+	CD3DX12_RANGE read_range(0, 0);
 	THROW_IF_FAILED(constant_buffer->Map(0, &read_range, reinterpret_cast<void**>(&constant_buffer_data_begin)));
 
 	cbv_srv_heap.create_heap(device, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 1, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
