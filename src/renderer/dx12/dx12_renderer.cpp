@@ -212,7 +212,7 @@ void cg::renderer::dx12_renderer::copy_data(const void* buffer_data, const UINT 
 D3D12_VERTEX_BUFFER_VIEW cg::renderer::dx12_renderer::create_vertex_buffer_view(const ComPtr<ID3D12Resource>& vertex_buffer, const UINT vertex_buffer_size)
 {
 	D3D12_VERTEX_BUFFER_VIEW view = {};
-	viewBufferLocation = vertex_buffers->GetGPUVirtualAddress();
+	view.BufferLocation = vertex_buffers->GetGPUVirtualAddress();
 	view.StrideInBytes = sizeof(vertex);
 	view.SizeInBytes = vertex_buffer_size;
 	return view;
