@@ -163,10 +163,10 @@ void cg::renderer::dx12_renderer::create_root_signature(const D3D12_STATIC_SAMPL
 	root_parameters[0].InitAsDescriptorTable(1, &ranges[0], D3D12_SHADER_VISIBILITY_ALL);
 
 	D3D12_FEATURE_DATA_ROOT_SIGNATURE rs_feature_data = {};
-	rs_feature_data.HighestVersion D3D_ROOT_SIGNATURE_1_1;
+	rs_feature_data.HighestVersion = D3D_ROOT_SIGNATURE_1_1;
 
 	if (FAILED(device->CheckFeatureSupport(D3D_FEATURE_ROOT_SIGNATURE, &rs_feature_data, sizeof(rs_feature_data)))) {
-		rs_feature_data.HighestVersion D3D_ROOT_SIGNATURE_1_0;
+		rs_feature_data.HighestVersion = D3D_ROOT_SIGNATURE_1_0;
 	}
 
 	D3D12_ROOT_SIGNATURE_FLAGS rs_flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
@@ -236,7 +236,7 @@ void cg::renderer::dx12_renderer::create_pso()
 	desc.DepthStencilState.StencilEnable = FALSE;
 	desc.SampleMask = UINT_MAX;
 	desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	desc.NumRenderTarget = 1;
+	desc.NumRenderTargets = 1;
 	desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 	desc.SampleDesc.Count = 1;
 
