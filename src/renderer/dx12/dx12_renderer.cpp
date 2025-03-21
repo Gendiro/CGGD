@@ -103,7 +103,7 @@ void cg::renderer::dx12_renderer::create_swap_chain(ComPtr<IDXGIFactory4>& dxgi_
 
 	ComPtr<IDXGISwapChain1> temp_swap_chain;
 	THROW_IF_FAILED(
-			dxgi_factory->CreateSwapChainForHwnd(command_queue.Get(), cg::utils::window::get_hwnd(), &desc, nullptr, nullptr, &temp_swap_chain););
+			dxgi_factory->CreateSwapChainForHwnd(command_queue.Get(), cg::utils::window::get_hwnd(), &desc, nullptr, nullptr, &temp_swap_chain));
 	dxgi_factory->MakeWindowAssociation(cg::utils::window::get_hwnd(), DXGI_MWA_NO_ALT_ENTER);
 	temp_swap_chain.As(&swap_chain);
 	frame_index = swap_chain->GetCurrentBackBufferIndex();
@@ -118,10 +118,10 @@ void cg::renderer::dx12_renderer::create_render_target_views()
 				render_targets[i].Get(),
 				nullptr,
 				rtv_heap.get_cpu_descriptor_handle(i));
+		std::wstring name(L"Render target ");
+		name += std::to_wstring(i);
+		render_targets[i]->SetName(name.c_str());
 	}
-	std::wstring name(L"Render target ");
-	name += std::to_wstring(i);
-	render_targets[i]->SetName(name.c_str());
 }
 
 void cg::renderer::dx12_renderer::create_depth_buffer()
@@ -220,7 +220,7 @@ D3D12_VERTEX_BUFFER_VIEW cg::renderer::dx12_renderer::create_vertex_buffer_view(
 
 D3D12_INDEX_BUFFER_VIEW cg::renderer::dx12_renderer::create_index_buffer_view(const ComPtr<ID3D12Resource>& index_buffer, const UINT index_buffer_size)
 {
-	D3D12_VERTEX_INDEX_VIEW view = {};
+	D3D12_VERTEX_BUFFER_VIEW view = {};
 	view.BufferLocation = index_buffers->GetGPUVirtualAddress();
 	view.SizeInBytes = index_buffer_size;
 	view.Format = DXGI_FORMAT_R32_UINT;
